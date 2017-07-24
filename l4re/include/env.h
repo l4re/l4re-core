@@ -186,14 +186,14 @@ L4_INLINE l4_cap_idx_t
 l4re_env_get_cap_e(char const *name, l4re_env_t const *e) L4_NOTHROW;
 
 /**
- * Get the full l4re_env_cap_entry_t for the object named \a name.
+ * Get the full l4re_env_cap_entry_t for the object named `name`.
  * \ingroup api_l4re_env
- * \param name is the name of the object to lookup in the initial objects.
- * \param l is the length of the name string, thus \a name might not be zero
- *          terminated.
- * \param e is the environment structure to use for the operation.
- * \return A pointer to an l4re_env_cap_entry_t if the object exists or
- *         NULL if not.
+ * \param name  Name of the object to lookup in the initial objects.
+ * \param l     Length of the name string, thus `name` may or may not be
+ *              zero-terminated.
+ * \param e     The environment structure to use for the operation.
+ * \return A pointer to an l4re_env_cap_entry_t if the object exists or NULL
+ *         if not.
  */
 L4_INLINE l4re_env_cap_entry_t const *
 l4re_env_get_cap_l(char const *name, unsigned l, l4re_env_t const *e) L4_NOTHROW;
@@ -214,12 +214,12 @@ l4re_env_get_cap_l(char const *name, unsigned l, l4re_env_t const *e) L4_NOTHROW
     {
       unsigned i;
       for (i = 0;
-           i < sizeof(c->name) && i < l && c->name[i] && name[i] && name[i] == c->name[i];
+           i < sizeof(c->name) && i < l && name[i] && name[i] == c->name[i];
            ++i)
-	;
+        ;
 
       if (i == l && (i == sizeof(c->name) || !c->name[i]))
-	return c;
+        return c;
     }
   return NULL;
 }

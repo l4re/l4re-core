@@ -191,23 +191,23 @@ namespace L4Re
     { return _env.caps; }
 
     /**
-     * Get the Cap_entry for the object named \a name.
-     * \param name is the name of the object.
-     * \param l is the length of the name, thus \a name might not be
-     *          zero terminated.
-     * \return A pointer to the Cap_entry for the object named \a name,
-     *         or NULL if no such object was found.
+     * Get the Cap_entry for the object named `name`.
+     * \param name  Name of the object to lookup in the initial objects.
+     * \param l     Length of the name string, thus `name` may or may not be
+     *              zero-terminated.
+     * \return A pointer to the Cap_entry for the object named `name`, or NULL
+     *         if no such object was found.
      */
     Cap_entry const *get(char const *name, unsigned l) const noexcept
     { return l4re_env_get_cap_l(name, l, &_env); }
 
     /**
-     * Get the capability index for the object named \a name.
-     * \param name is the name of the object.
-     * \param l is the length of the name, thus \a name might not be
-     *          zero terminated.
-     * \return A capability index for the object named \a name,
-     *         or an invalid capability selector if no such object was found.
+     * Get the capability index for the object named `name`.
+     * \param name  Name of the object to lookup in the initial objects.
+     * \param l     Length of the name string, thus `name` may or may not be
+     *              zero-terminated.
+     * \return A capability selector for the object named `name`, or an invalid
+     *         capability selector if no such object was found.
      */
     template< typename T >
     L4::Cap<T> get_cap(char const *name, unsigned l) const noexcept
