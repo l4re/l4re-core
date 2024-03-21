@@ -54,12 +54,12 @@ public:
    * \retval 0   Success
    * \retval <0  Error
    */
-  l4_ret_t map(Dataspace::Offset offset,
-               Dataspace::Map_addr local_addr,
-               Dataspace::Flags flags,
-               Dataspace::Map_addr min_addr,
-               Dataspace::Map_addr max_addr,
-               L4::Ipc::Snd_fpage &memory)
+  virtual l4_ret_t map(Dataspace::Offset offset,
+                       Dataspace::Map_addr local_addr,
+                       Dataspace::Flags flags,
+                       Dataspace::Map_addr min_addr,
+                       Dataspace::Map_addr max_addr,
+                       L4::Ipc::Snd_fpage &memory)
   {
     memory = L4::Ipc::Snd_fpage();
 
