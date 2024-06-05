@@ -55,6 +55,7 @@ namespace L4Re
    * ------------ | --------------- | --------------------
    * parent       | L4Re::Parent    | L4Re::Env::parent()
    * user_factory | L4::Factory     | L4Re::Env::user_factory()
+   * mem_alloc    | L4Re::Mem_alloc | L4Re::Env::mem_alloc()
    * log          | L4Re::Log       | L4Re::Env::log()
    * main_thread  | L4::Thread      | L4Re::Env::main_thread()
    * rm           | L4Re::Rm        | L4Re::Env::rm()
@@ -112,7 +113,7 @@ namespace L4Re
      * Object-capability to the user-level object factory.
      */
     L4::Cap<L4::Factory> user_factory() const noexcept
-    { return L4::Cap<L4::Factory>(_env.mem_alloc); }
+    { return L4::Cap<L4::Factory>(_env.user_factory); }
     /**
      * Object-capability to the region map.
      * \return Region map object-capability
@@ -240,6 +241,12 @@ namespace L4Re
      */
     void mem_alloc(L4::Cap<Mem_alloc> const &c) noexcept
     { _env.mem_alloc = c.cap(); }
+    /**
+     * Set the user factory object capability
+     * \param c Object capability for the user-level factory.
+     */
+    void user_factory(L4::Cap<L4::Factory> const &c) noexcept
+    { _env.user_factory = c.cap(); }
     /**
      * Set region map object-capability.
      * \param c  Region map object-capability
