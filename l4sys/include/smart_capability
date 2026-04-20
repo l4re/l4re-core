@@ -147,28 +147,6 @@ public:
   ~Smart_cap() noexcept { _delete(); }
 };
 
-template< typename T >
-class Weak_cap : public Cap_base
-{
-public:
-  Weak_cap() noexcept : Cap_base(Invalid) {}
-
-  template< typename O >
-  Weak_cap(typename Cap<O>::Cap_type t) noexcept : Cap_base(t)
-  { Cap<T>::template check_convertible_from<O>(); }
-
-  template< typename O, typename S >
-  Weak_cap(Smart_cap<O, S> const &c) noexcept : Cap_base(c.cap())
-  { Cap<T>::template check_convertible_from<O>(); }
-
-  Weak_cap(Weak_cap const &o) noexcept : Cap_base(o) {}
-
-  template< typename O >
-  Weak_cap(Weak_cap<O> const &o) noexcept : Cap_base(o)
-  { Cap<T>::template check_convertible_from<O>(); }
-
-};
-
 namespace Cap_traits {
   template< typename T1, typename T2 >
   struct Type { enum { Equal = false }; };
