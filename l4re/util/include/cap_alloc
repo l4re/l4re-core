@@ -16,7 +16,6 @@
 
 #include <l4/re/util/cap_alloc_impl.h>
 #include <l4/re/util/item_alloc>
-#include <l4/sys/smart_capability>
 #include <l4/sys/task>
 #include <l4/re/consts>
 
@@ -149,102 +148,6 @@ public:
     return src;
   }
 };
-
-
-/**
- * Automatic capability that implements automatic free and
- * unmap of the capability slot.
- *
- * \tparam T  Type of the object that is referred by the capability.
- *
- * This kind of automatic capability implements a counted reference to a
- * capability slot. The capability shall be unmapped and freed
- * when the reference count in the allocator goes to zero.
- *
- * Usage:
- * ~~~
- * L4Re::Util::Ref_cap<L4Re::Dataspace>::Cap global_ds_cap;
- *
- * {
- *   L4Re::Util::Ref_cap<L4Re::Dataspace>::Cap
- *     ds_cap(L4Re::Util::cap_alloc.alloc<L4Re::Dataspace>());
- *   // reference count for the allocated capability slot is now 1
- *
- *   // use the dataspace cap
- *   L4Re::chksys(mem_alloc->alloc(4096, ds_cap.get()));
- *
- *   global_ds_cap = ds_cap;
- *   // reference count is now 2
- *   ...
- * }
- * // reference count dropped to 1 (ds_cap is no longer existing).
- * ~~~
- */
-template< typename T >
-struct Ref_cap
-{
-  typedef L4::Smart_cap<T, Smart_count_cap<L4_FP_ALL_SPACES> > Cap;
-};
-
-/**
- * Automatic capability that implements automatic free and
- * unmap+delete of the capability slot.
- *
- * \tparam T  Type of the object that is referred by the capability.
- *
- * This kind of automatic capability implements a counted reference to a
- * capability slot. The capability shall be unmapped and freed
- * when the reference count in the allocator goes to zero.
- * The main difference to Ref_cap is that the unmap is done with the
- * deletion flag enabled and this leads to the deletion of the object
- * if the current task holds appropriate deletion rights.
- *
- * Usage:
- * ~~~
- * L4Re::Util::Ref_del_cap<L4Re::Dataspace>::Cap global_ds_cap;
- *
- * {
- *   L4Re::Util::Ref_del_cap<L4Re::Dataspace>::Cap
- *     ds_cap(L4Re::Util::cap_alloc.alloc<L4Re::Dataspace>());
- *   // reference count for the allocated capability slot is now 1
- *
- *   // use the dataspace cap
- *   L4Re::chksys(mem_alloc->alloc(4096, ds_cap.get()));
- *
- *   global_ds_cap = ds_cap;
- *   // reference count is now 2
- *   ...
- * }
- * // reference count dropped to 1 (ds_cap is no longer existing).
- * ...
- * global_ds_cap = L4_INVALID_CAP;
- * // reference count dropped to 0 (data space shall be deleted).
- * ~~~
- */
-template< typename T >
-struct Ref_del_cap
-{
-  typedef L4::Smart_cap<T, Smart_count_cap<L4_FP_DELETE_OBJ> > Cap;
-};
-
-/**
- * Allocate a capability slot and wrap it in a Ref_cap.
- *
- * \tparam T  Type of capability the slot is used for.
- */
-template< typename T >
-typename Ref_cap<T>::Cap
-make_ref_cap() { return typename Ref_cap<T>::Cap(cap_alloc.alloc<T>()); }
-
-/**
- * Allocate a capability slot and wrap it in a Ref_del_cap.
- *
- * \tparam T  Type of capability the slot is used for.
- */
-template< typename T >
-typename Ref_del_cap<T>::Cap
-make_ref_del_cap()
-{ return typename Ref_del_cap<T>::Cap(cap_alloc.alloc<T>()); }
 
 /**@}*/
 

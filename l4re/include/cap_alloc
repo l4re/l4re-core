@@ -14,7 +14,6 @@
 #pragma once
 
 #include <l4/sys/task>
-#include <l4/sys/smart_capability>
 #include <l4/re/consts>
 #include <l4/cxx/type_traits>
 
