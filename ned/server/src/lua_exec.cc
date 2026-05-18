@@ -34,7 +34,7 @@ class Lua_app_task : public App_task
 {
 public:
   Lua_app_task(lua_State *lua,
-               L4Re::Util::Ref_cap<L4::Factory>::Cap const &alloc)
+               L4Re::Shared_cap<L4::Factory> const &alloc)
   : App_task(alloc), _lua(lua), _cb(LUA_NOREF)
   {}
 
@@ -121,10 +121,10 @@ private:
   {
   private:
     unsigned _i = 0;
-    L4Re::Util::Ref_cap<void>::Cap _c[NUM];
+    L4Re::Shared_cap<void> _c[NUM];
 
   public:
-    void push(L4Re::Util::Ref_cap<void>::Cap c)
+    void push(L4Re::Shared_cap<void> c)
     {
       if (_i >= NUM)
         throw "internal error: too many temporary caps for stack";
@@ -139,7 +139,7 @@ private:
   int _cfg_idx;
   int _arg_idx;
 
-  L4Re::Util::Ref_cap<L4::Factory>::Cap _rm_fab;
+  L4Re::Shared_cap<L4::Factory> _rm_fab;
 
   /**
    * container to store some ref counted caps to make sure the Lua GC
@@ -159,10 +159,10 @@ private:
   }
 
   template<typename CT>
-  typename L4Re::Util::Ref_cap<CT>::Cap
+  L4Re::Shared_cap<CT>
   _cfg_cap(char const *f, l4_fpage_t *r = 0)
   {
-    typedef typename L4Re::Util::Ref_cap<CT>::Cap R_cap;
+    using R_cap = L4Re::Shared_cap<CT>;
 
     lua_getfield(_lua, _cfg_idx, f);
     while (lua_isfunction(_lua, -1))
@@ -302,8 +302,8 @@ public:
 
   void parse_cfg()
   {
-    L4Re::Util::Ref_cap<L4::Factory>::Cap user_factory
-      = L4Re::Env::env()->user_factory();
+    auto user_factory
+      = L4Re::Shared_cap<L4::Factory>(L4Re::Env::env()->user_factory());
 
     prog_info()->mem_alloc = user_factory.fpage();
     prog_info()->log = L4Re::Env::env()->log().is_valid()
@@ -339,7 +339,7 @@ public:
       _rm_fab = user_factory;
   }
 
-  L4Re::Util::Ref_cap<L4::Factory>::Cap rm_fab() const { return _rm_fab; }
+  L4Re::Shared_cap<L4::Factory> rm_fab() const { return _rm_fab; }
 
   void set_task(App_task *t) { _task = t; }
 

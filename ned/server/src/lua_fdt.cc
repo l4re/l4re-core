@@ -18,7 +18,7 @@
 #include <l4/re/dataspace>
 #include <l4/re/env>
 #include <l4/re/rm>
-#include <l4/re/util/cap_alloc>
+#include <l4/re/shared_cap>
 
 #include "lua_cap.h"
 #include "lua.h"
@@ -29,7 +29,7 @@ static char const *const DT_TYPE = "L4::Dt";
 
 struct Dt
 {
-  L4Re::Util::Ref_cap<L4Re::Dataspace>::Cap ds;
+  L4Re::Shared_cap<L4Re::Dataspace> ds;
   L4Re::Rm::Unique_region<char *> region;
 
   void const *fdt() const { return region.get(); }

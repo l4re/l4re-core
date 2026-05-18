@@ -10,7 +10,7 @@
 
 #include <l4/cxx/unique_ptr>
 #include <l4/re/util/cap_alloc>
-#include <l4/re/util/unique_cap>
+#include <l4/re/shared_cap>
 #include <l4/re/env>
 #include <l4/sys/factory>
 
@@ -47,7 +47,7 @@ __alloc(lua_State *l)
   Lua::Cap *n = check_cap(l, 1);
   int objt = luaL_checkinteger(l, 2);
 
-  auto obj = L4Re::Util::make_unique_cap<L4::Kobject>();
+  auto obj = L4Re::make_shared_cap<L4::Kobject>(&L4Re::Util::cap_alloc);
 
   if (!obj.is_valid())
     luaL_error(l, "out of caps");
@@ -81,9 +81,8 @@ __alloc(lua_State *l)
 
   lua_pushinteger(l, objt);
   Cap *nc = Lua::push_new_cap(l, true);
-  nc->set(obj.get());
+  nc->set(cxx::move(obj));
 
-  obj.release();
   return 1;
 }
 

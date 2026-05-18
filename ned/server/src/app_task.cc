@@ -112,7 +112,7 @@ App_task::handle_irq()
     }
 }
 
-App_task::App_task(L4Re::Util::Ref_cap<L4::Factory>::Cap const &alloc)
+App_task::App_task(L4Re::Shared_cap<L4::Factory> const &alloc)
 : _task(chkcap(cap_alloc.alloc<L4::Task>(), "allocating task cap")),
   _thread(chkcap(cap_alloc.alloc<L4::Thread>(), "allocating thread cap")),
   _rm(chkcap(cap_alloc.alloc<L4Re::Rm>(), "allocating region-map cap")),

@@ -12,7 +12,7 @@
 #include <l4/re/error_helper>
 
   void
-Stack::set_stack(L4Re::Util::Ref_cap<L4Re::Dataspace>::Cap const &ds, unsigned size)
+Stack::set_stack(L4Re::Shared_cap<L4Re::Dataspace> const &ds, unsigned size)
 {
   L4Re::chksys(L4Re::Env::env()->rm()->attach(&_vma, size,
                                               L4Re::Rm::F::Search_addr | L4Re::Rm::F::RW,

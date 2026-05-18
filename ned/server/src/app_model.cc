@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <l4/bid_config.h>
 #include <l4/re/error_helper>
+#include <l4/re/util/cap_alloc>
 #include <l4/re/util/env_ns>
 #include <l4/sys/debugger.h>
 
@@ -32,8 +33,8 @@ App_model::Dataspace
 App_model::alloc_ds(unsigned long size, l4_addr_t paddr,
                     unsigned long flags, unsigned align) const
 {
-  Dataspace mem = chkcap(L4Re::Util::cap_alloc.alloc<L4Re::Dataspace>(),
-                         "allocate capability");
+  auto mem = chkcap(L4Re::make_shared_cap<L4Re::Dataspace>(&L4Re::Util::cap_alloc),
+                    "allocate capability");
   L4::Cap<L4Re::Mem_alloc> _ma(prog_info()->mem_alloc.raw & L4_FPAGE_ADDR_MASK);
   chksys(_ma->alloc(size, mem.get(), flags, align, paddr),
          "allocate writable program segment");
@@ -44,7 +45,9 @@ App_model::Const_dataspace
 App_model::open_file(char const *name)
 {
   L4Re::Util::Env_ns ens;
-  return L4Re::chkcap(ens.query<L4Re::Dataspace>(name), name, -L4_ENOENT);
+  return Const_dataspace(L4Re::chkcap(ens.query<L4Re::Dataspace>(name), name,
+                                      -L4_ENOENT),
+                         &L4Re::Util::cap_alloc);
 }
 
 void
@@ -133,16 +136,15 @@ App_model::App_model()
 App_model::Dataspace
 App_model::alloc_app_stack()
 {
-  L4Re::Util::Ref_cap<L4Re::Dataspace>::Cap stack
-    = chkcap(L4Re::Util::cap_alloc.alloc<L4Re::Dataspace>(),
-             "allocate stack capability");
+  auto stack = chkcap(L4Re::make_shared_cap<L4Re::Dataspace>(&L4Re::Util::cap_alloc),
+                      "allocate stack capability");
   L4::Cap<L4Re::Mem_alloc> ma(prog_info()->mem_alloc.raw & L4_FPAGE_ADDR_MASK);
   chksys(ma->alloc(_stack.stack_size(), stack.get()),
          "allocate stack");
 
   _stack.set_stack(stack, _stack.stack_size());
 
-  return stack.release();
+  return stack;
 }
 
 void

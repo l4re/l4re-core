@@ -8,6 +8,7 @@
 
 
 #include <l4/re/l4aux.h>
+#include <l4/re/shared_cap>
 
 #include <l4/libloader/loader>
 #include <l4/libloader/remote_app_model>
@@ -38,9 +39,9 @@ struct App_model : public Ldr::Base_app_model<Stack>
 #endif
   };
 
-  typedef L4Re::Util::Ref_cap<L4Re::Dataspace>::Cap Const_dataspace;
-  typedef L4Re::Util::Ref_cap<L4Re::Dataspace>::Cap Dataspace;
-  typedef L4Re::Util::Ref_cap<L4Re::Rm>::Cap Rm;
+  typedef L4Re::Shared_cap<L4Re::Dataspace> Const_dataspace;
+  typedef L4Re::Shared_cap<L4Re::Dataspace> Dataspace;
+  typedef L4Re::Shared_cap<L4Re::Rm> Rm;
 #if 0
   typedef L4::Cap<L4Re::Dataspace> Const_dataspace;
   typedef L4::Cap<L4Re::Dataspace> Dataspace;
@@ -91,7 +92,7 @@ struct App_model : public Ldr::Base_app_model<Stack>
   static Dataspace local_kip_ds()
   {
     extern l4re_aux_t const* l4re_aux;
-    return L4::Cap<L4Re::Dataspace>(l4re_aux->kip_ds);
+    return Dataspace(L4::Cap<L4Re::Dataspace>(l4re_aux->kip_ds));
   }
 
 

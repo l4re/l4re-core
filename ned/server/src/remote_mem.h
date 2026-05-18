@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include <l4/re/util/cap_alloc>
+#include <l4/re/shared_cap>
 #include <l4/sys/capability>
 #include <l4/re/dataspace>
 #include <l4/sys/types.h>
@@ -17,7 +17,7 @@
 class Stack_base
 {
 protected:
-  L4Re::Util::Ref_cap<L4Re::Dataspace>::Cap _stack_ds;
+  L4Re::Shared_cap<L4Re::Dataspace> _stack_ds;
   L4Re::Rm::Unique_region<char*> _vma;
 
   l4_addr_t _last_checked;
@@ -41,5 +41,5 @@ class Stack : public Ldr::Remote_stack<Stack_base>
 {
 public:
   explicit Stack() : Ldr::Remote_stack<Stack_base>(0) {}
-  void set_stack(L4Re::Util::Ref_cap<L4Re::Dataspace>::Cap const &ds, unsigned size);
+  void set_stack(L4Re::Shared_cap<L4Re::Dataspace> const &ds, unsigned size);
 };

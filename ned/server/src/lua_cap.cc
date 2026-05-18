@@ -156,9 +156,8 @@ __full(lua_State *l)
 bool
 Cap::find_dynamic_type(lua_State *l) const
 {
-  using L4Re::Util::Ref_cap;
   Dbg dbg(Dbg::Warn, "lua");
-  Ref_cap<L4::Meta>::Cap _meta = L4::cap_cast<L4::Meta>(_c);
+  auto _meta = L4::cap_cast<L4::Meta>(_c.get());
   long proto = 0;
   char name_buf[256];
   L4::Ipc::String<char> name(sizeof(name_buf), name_buf);
@@ -301,7 +300,8 @@ register_cap(lua_State *l, char const *name, L4::Cap<void> i, long proto)
 {
   lua_pushinteger(l, proto);
   Cap *c = push_new_cap(l, true);
-  c->set(Cap::C<void>::Cap(i));
+  // Fixed env slot, not owned: no allocator, never released.
+  c->set(L4Re::Shared_cap<void>(i));
   c->set_rights(L4_CAP_FPAGE_RWS);
   lua_setfield(l, -2, name);
 }

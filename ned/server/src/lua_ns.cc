@@ -11,7 +11,7 @@
 
 #include <l4/re/namespace>
 #include <l4/re/util/cap_alloc>
-#include <l4/re/util/unique_cap>
+#include <l4/re/shared_cap>
 #include <l4/re/env>
 
 #include "lua_cap.h"
@@ -32,7 +32,7 @@ __lookup(lua_State *l)
 
   L4::Cap<L4Re::Namespace> ns(_ns->cap<L4Re::Namespace>().get());
 
-  auto obj = L4Re::Util::make_unique_cap<void>();
+  auto obj = L4Re::make_shared_cap<void>(&L4Re::Util::cap_alloc);
   if (!obj.is_valid())
     luaL_error(l, "out of caps");
 
@@ -54,7 +54,7 @@ __lookup(lua_State *l)
 
 
   Lua::Cap *no = Lua::push_void_cap(l);
-  no->set(obj.release());
+  no->set(cxx::move(obj));
   no->set_rights(rights);
 
   return 1;

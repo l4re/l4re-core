@@ -11,7 +11,7 @@
 #include <lauxlib.h>
 #include <lualib.h>
 
-#include <l4/re/util/cap_alloc>
+#include <l4/re/shared_cap>
 
 #if 0
 #include <cstdio>
@@ -47,11 +47,8 @@ class Cap
 
 public:
   template< typename T >
-  struct C : public L4Re::Util::Ref_cap<T> {};
-
-  template< typename T >
-  typename C<T>::Cap cap() const
-  { return L4::cap_cast<T>(_c); }
+  L4Re::Shared_cap<T> cap() const
+  { return L4Re::shared_cap_cast<T>(_c); }
 
   l4_fpage_t fpage() const
   { return _c.fpage(_rights & L4_CAP_FPAGE_RWSD); }
@@ -67,15 +64,15 @@ public:
   L4_cap_fpage_rights rights() const
   { return L4_cap_fpage_rights(_rights & 0xf); }
 
-  Cap(C<void>::Cap c = C<void>::Cap(), unsigned flags = 0)
-  : _c(c), _rights(L4_FPAGE_RO), _flags(flags) {}
+  Cap(L4Re::Shared_cap<void> c = {}, unsigned flags = 0)
+  : _c(cxx::move(c)), _rights(L4_FPAGE_RO), _flags(flags) {}
 
   template< typename T >
-  void set(typename C<T>::Cap c)
-  { _c = c; }
+  void set(L4Re::Shared_cap<T> c)
+  { _c = cxx::move(c); }
 
-  void set(C<void>::Cap c)
-  { _c = c; }
+  void set(L4Re::Shared_cap<void> c)
+  { _c = cxx::move(c); }
 
   void trim_rights(L4_cap_fpage_rights keep)
   { _rights = _rights & (keep | (~0U << 4)); }
@@ -122,7 +119,7 @@ public:
   bool find_dynamic_type(lua_State *) const;
 
 private:
-  C<void>::Cap _c;
+  L4Re::Shared_cap<void> _c;
   unsigned _rights : 16;
   unsigned _flags  : 16;
 };

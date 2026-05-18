@@ -12,7 +12,7 @@
 #include <l4/re/rm>
 #include <l4/sys/scheduler>
 #include <l4/re/util/object_registry>
-#include <l4/re/util/cap_alloc>
+#include <l4/re/shared_cap>
 
 #include <l4/sys/cxx/ipc_epiface>
 #include "foreign_server.h"
@@ -87,7 +87,7 @@ public:
     self->_self = self;
   }
 
-  App_task(L4Re::Util::Ref_cap<L4::Factory>::Cap const &alloc);
+  App_task(L4Re::Shared_cap<L4::Factory> const &alloc);
   virtual ~App_task();
 
   void handle_irq();
