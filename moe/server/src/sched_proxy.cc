@@ -9,6 +9,7 @@
 #include "debug.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <l4/cxx/minmax>
 #include <l4/re/env>
 #include <l4/sys/scheduler>
@@ -225,38 +226,47 @@ public:
 
   Cpu_hotplug_server()
   {
+    auto sched = L4Re::Env::env()->scheduler();
+
     l4_sched_cpu_set_t c = l4_sched_cpu_set(0, 0, 0);
-    int e = l4_error(L4Re::Env::env()->scheduler()->info(&kernel_cpu_max, &c,
-                                                         &kernel_sched_classes));
+    l4_ret_t e = l4_error(sched->info(&kernel_cpu_max, &c, &kernel_sched_classes));
     if (e < 0)
       {
-        Err(Err::Fatal).printf("Could not query scheduler: %d\n", e);
-        return;
+        Err(Err::Fatal).printf("Could not query scheduler (%s)\n",
+                               l4sys_errtostr(e));
+        exit(1);
       }
 
     L4::Cap<L4::Irq> irq = object_pool.cap_alloc()->alloc<L4::Irq>();
     if (!irq)
       {
         Err(Err::Fatal).printf("Could not allocate capability for CPU hotplug\n");
-        return;
+        exit(1);
       }
 
-    if (l4_error(L4::Cap<L4::Factory>(L4_BASE_FACTORY_CAP)->create(irq)) < 0)
+    e = l4_error(L4::Cap<L4::Factory>(L4_BASE_FACTORY_CAP)->create(irq));
+    if (e < 0)
       {
-        Err(Err::Fatal).printf("Could not allocate IRQ for CPU hotplug\n");
-        return;
+        Err(Err::Fatal).printf("Could not allocate IRQ for CPU hotplug (%s)\n",
+                               l4sys_errtostr(e));
+        exit(1);
       }
 
-    if (l4_error(irq->bind_thread(L4::Cap<L4::Thread>(L4_BASE_THREAD_CAP), l4_umword_t(this))) < 0)
+    e = l4_error(irq->bind_thread(L4::Cap<L4::Thread>(L4_BASE_THREAD_CAP),
+                                  l4_umword_t(this)));
+    if (e < 0)
       {
-        Err(Err::Fatal).printf("Could not attach to CPU hotplug IRQ\n");
-        return;
+        Err(Err::Fatal).printf("Could not attach to CPU hotplug IRQ (%s)\n",
+                               l4sys_errtostr(e));
+        exit(1);
       }
 
-    if (l4_error(L4Re::Env::env()->scheduler()->bind(0, irq)) < 0)
+    e = l4_error(sched->bind(0, irq));
+    if (e < 0)
       {
-        Err(Err::Fatal).printf("Could not bind CPU hotplug IRQ to scheduler\n");
-        return;
+        Err(Err::Fatal).printf("Could not bind CPU hotplug IRQ to scheduler (%s)\n",
+                               l4sys_errtostr(e));
+        exit(1);
       }
   }
 };
