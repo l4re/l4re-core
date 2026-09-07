@@ -98,6 +98,7 @@ define HDR_common
   sys/mman.h
   sys/mount.h
   sys/param.h
+  sys/poll.h
   sys/prctl.h
   sys/queue.h
   sys/resource.h
