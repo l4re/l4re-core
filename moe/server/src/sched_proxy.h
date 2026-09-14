@@ -53,6 +53,16 @@ public:
   static void free_irq_cap(Irq_cap cap)
   { object_pool.cap_alloc()->free(cap); }
 
+  int irq_cap_received(L4::Cap<L4::Irq> irq, L4::Cap<L4::Irq> *old_cap)
+  {
+    free_irq_cap(*old_cap);
+    *old_cap = alloc_irq_cap();
+    if (!old_cap->is_valid())
+      return -L4_ENOMEM;
+    old_cap->move(irq);
+    return L4_EOK;
+  }
+
   Sched_proxy(Moe::Q_alloc *q);
 
   int info(l4_umword_t *cpu_max, l4_sched_cpu_set_t *cpus,

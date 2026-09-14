@@ -25,7 +25,29 @@ private:
   ICU const *this_icu() const { return static_cast<ICU const *>(this); }
   ICU *this_icu() { return static_cast<ICU*>(this); }
 
+protected:
+  static void free_irq_cap(L4::Cap<L4::Irq> &cap)
+  {
+    if (cap)
+      {
+        L4Re::Util::cap_alloc.free(cap);
+        cap.invalidate();
+      }
+  }
+
 public:
+  int irq_cap_received(L4::Cap<L4::Irq> irq, L4::Cap<L4::Irq> *old_cap)
+  {
+    int r = this->this_icu()->server_iface()->realloc_rcv_cap(0);
+    if (r < 0)
+      return r;
+
+    ICU::free_irq_cap(*old_cap);
+    *old_cap = irq;
+
+    return L4_EOK;
+  }
+
   L4_RPC_LEGACY_DISPATCH(L4::Icu);
 
   l4_ret_t op_bind(L4::Icu::Rights, l4_umword_t irqnum,
@@ -112,16 +134,6 @@ Icu_svr<ICU>::op_unmask(L4::Icu::Rights, l4_umword_t irqnum)
 template< typename ICU >
 class Icu_cap_array_svr : public Icu_svr<ICU>
 {
-protected:
-  static void free_irq_cap(L4::Cap<L4::Irq> &cap)
-  {
-    if (cap)
-      {
-        L4Re::Util::cap_alloc.free(cap);
-        cap.invalidate();
-      }
-  }
-
 public:
   class Irq
   {
@@ -186,13 +198,7 @@ Icu_cap_array_svr<ICU>::Irq::bind(ICU *cfb, L4::Ipc::Snd_fpage const &irq_fp)
   if (!irq)
     return -L4_EINVAL;
 
-  int r = cfb->server_iface()->realloc_rcv_cap(0);
-  if (r < 0)
-    return r;
-
-  ICU::free_irq_cap(_cap);
-  _cap = irq;
-  return 0;
+  return cfb->irq_cap_received(irq, &_cap);
 }
 
 template< typename ICU >
