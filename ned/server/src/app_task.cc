@@ -95,6 +95,10 @@ App_task::Parent_receiver::op_signal(L4Re::Parent::Rights, unsigned long sig,
 void
 App_task::handle_irq()
 {
+  // Holds on to this instance until the function returns, as moving _self
+  // out may leave this as the last reference, deleting this object.
+  cxx::Ref_ptr<App_task> self;
+
   if (_state == Running)
     {
       _state = Zombie;
@@ -104,7 +108,7 @@ App_task::handle_irq()
       dispatch_exit_signal();
       --apps_running;
 
-      _self = nullptr;  // keep at end; might delete current instance
+      self = cxx::move(_self);
     }
 }
 
@@ -156,13 +160,16 @@ App_task::dispatch_exit_signal()
 void
 App_task::terminate()
 {
+  // See handle_irq().
+  cxx::Ref_ptr<App_task> self;
+
   if (_state == Running)
     {
       _state = Zombie;
       reset();
       dispatch_exit_signal();
       --apps_running;
-      _self = nullptr;  // keep at end; might delete current instance
+      self = cxx::move(_self);
     }
 }
 
