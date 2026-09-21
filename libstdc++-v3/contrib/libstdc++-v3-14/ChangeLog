@@ -1,3 +1,71 @@
+2026-09-24  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-09-23  Jonathan Wakely  <jwakely@redhat.com>
+
+	* libsupc++/new_opa.cc
+	[_GLIBCXX_HAVE_ALIGNED_ALLOC] (__gnu_cxx::aligned_alloc):
+	Replace using-directive with new function. Check for size_t
+	overflow.
+	[_GLIBCXX_HAVE__ALIGNED_MALLOC] (__gnu_cxx::aligned_alloc):
+	Check for size_t overflow.
+	(__gnu_cxx::aligned_alloc): Likewise in fallback definition.
+	(operator new) [_GLIBCXX_HAVE_ALIGNED_ALLOC]: Move parameter
+	adjustments to new __gnu_cxx::aligned_alloc function.
+	* testsuite/18_support/new_aligned_wrap.cc: New test.
+
+2026-09-21  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	Backported from master:
+	2026-09-17  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	PR libstdc++/123409
+	* include/bits/random.h (negative_binomial_distribution::param)
+	(fisher_f_distribution::param, student_t_distribution::param):
+	Updated underlying gamma distributions, by calling param.
+	(chi_squared_distribution::param): Use type alias and parenthesis
+	for consistency.
+	* testsuite/26_numerics/random/distribution_param.cc: New test.
+	* testsuite/26_numerics/random/chi_squared_distribution/83833.cc:
+	Removed, covered by above.
+
+2026-09-07  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	Backported from master:
+	2026-08-27  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	PR libstdc++/123510
+	* src/c++20/tzdb.cc (at_time::is_indicator): Add case labels
+	for uppercase letters.
+	(operator>>(istream&, years_from_to)): Check for 'M' and 'O',
+	(chrono::reload_tzdb): Add case labels for lowercase letters,
+	and normalize first letter of type.
+	(operator>>(istream&, abbrev_month&)): Match all cases in
+	switch and days_chars.
+	(operator>>(istream&, on_month_day&)): Check for 'L'.
+	* testsuite/std/time/tzdb/name_matching.cc: New test.
+
+2026-09-07  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	Backported from master:
+	2026-09-07  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	PR libstdc++/118665
+	* include/bits/uniform_int_dist.h (uniform_int_distribution::_S_nd):
+	Substract __min (_Urbg::min()) from each generator invocation.
+	* testsuite/26_numerics/random/uniform_int_distribution/operators/values.cc:
+	Add testDiscreteDist for shifted (with non-zero min()) engine.
+
+2026-08-25  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-08-24  Jonathan Wakely  <jwakely@redhat.com>
+
+	PR libstdc++/127006
+	* include/std/spanstream (basic_ospanstream(span, openmode)):
+	Add correct openmode value to parameter.
+	* testsuite/27_io/spanstream/127006.cc: New test.
+
 2026-08-18  Jonathan Wakely  <jwakely@redhat.com>
 
 	Backported from master:
