@@ -1,3 +1,252 @@
+2026-09-24  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-09-23  Jonathan Wakely  <jwakely@redhat.com>
+
+	* libsupc++/new_opa.cc
+	[_GLIBCXX_HAVE_ALIGNED_ALLOC] (__gnu_cxx::aligned_alloc):
+	Replace using-directive with new function. Check for size_t
+	overflow.
+	[_GLIBCXX_HAVE__ALIGNED_MALLOC] (__gnu_cxx::aligned_alloc):
+	Check for size_t overflow.
+	(__gnu_cxx::aligned_alloc): Likewise in fallback definition.
+	(operator new) [_GLIBCXX_HAVE_ALIGNED_ALLOC]: Move parameter
+	adjustments to new __gnu_cxx::aligned_alloc function.
+	* testsuite/18_support/new_aligned_wrap.cc: New test.
+
+2026-09-21  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	Backported from master:
+	2026-09-17  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	PR libstdc++/123409
+	* include/bits/random.h (negative_binomial_distribution::param)
+	(fisher_f_distribution::param, student_t_distribution::param):
+	Updated underlying gamma distributions, by calling param.
+	(chi_squared_distribution::param): Use type alias and parenthesis
+	for consistency.
+	* testsuite/26_numerics/random/distribution_param.cc: New test.
+	* testsuite/26_numerics/random/chi_squared_distribution/83833.cc:
+	Removed, covered by above.
+
+2026-09-18  Jonathan Wakely  <jwakely@redhat.com>
+
+	* testsuite/20_util/specialized_algorithms/pstl/uninitialized_copy_move.cc:
+	Replace references to namespace __pstl with std.
+	* testsuite/25_algorithms/pstl/alg_merge/inplace_merge.cc:
+	Likewise.
+	* testsuite/25_algorithms/pstl/alg_modifying_operations/copy_if.cc:
+	Likewise.
+	* testsuite/25_algorithms/pstl/alg_modifying_operations/copy_move.cc:
+	Likewise.
+	* testsuite/25_algorithms/pstl/alg_modifying_operations/is_partitioned.cc:
+	Likewise.
+	* testsuite/25_algorithms/pstl/alg_modifying_operations/partition.cc:
+	Likewise.
+	* testsuite/25_algorithms/pstl/alg_modifying_operations/partition_copy.cc:
+	Likewise.
+	* testsuite/25_algorithms/pstl/alg_modifying_operations/remove.cc:
+	Likewise.
+	* testsuite/25_algorithms/pstl/alg_modifying_operations/rotate.cc:
+	Likewise.
+	* testsuite/25_algorithms/pstl/alg_modifying_operations/rotate_copy.cc:
+	Likewise.
+	* testsuite/25_algorithms/pstl/alg_modifying_operations/unique.cc:
+	Likewise.
+	* testsuite/25_algorithms/pstl/alg_modifying_operations/unique_copy_equal.cc:
+	Likewise.
+	* testsuite/util/pstl/test_utils.h: Likewise.
+
+2026-09-18  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-09-17  Jonathan Wakely  <jwakely@redhat.com>
+
+	* testsuite/lib/libstdc++.exp (v3_check_preprocessor_condition):
+	Use argument as filename for preprocessing.
+
+2026-09-18  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-09-17  Jonathan Wakely  <jwakely@redhat.com>
+
+	* testsuite/lib/libstdc++.exp (check_v3_target_cpp_feature_test):
+	Use $v3_max_std variable instead of hardcoding the latest -std
+	option.
+
+2026-09-18  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-08-18  Jonathan Wakely  <jwakely@redhat.com>
+
+	PR libstdc++/126786
+	* src/c++23/Makefile.am (empty.cc): New target.
+	(std.lo, std.o, std.compat.lo, std.compat.o): Use empty.cc as
+	fallback instead of overwriting original sources.
+	* src/c++23/Makefile.in: Regenerate.
+
+2026-09-16  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-09-16  Jonathan Wakely  <jwakely@redhat.com>
+
+	* testsuite/20_util/function_objects/dr660.cc: Include the
+	testsuite_hooks.h header not testsuite_hooks.cc.
+
+2026-09-16  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-09-16  Jonathan Wakely  <jwakely@redhat.com>
+
+	* testsuite/27_io/basic_filebuf/close/char/4879.cc: Fix typo in
+	comment.
+
+2026-09-16  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-09-16  Jonathan Wakely  <jwakely@redhat.com>
+
+	* include/bits/atomic_wait.h: Fix typo in comment.
+
+2026-09-16  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-09-16  Jonathan Wakely  <jwakely@redhat.com>
+
+	PR libstdc++/127430
+	* config/io/basic_file_stdio.cc (__basic_file::fd) Fix typo in
+	preprocessor condition.
+
+2026-09-16  Gerald Pfeifer  <gerald@pfeifer.com>
+
+	Backported from master:
+	2026-08-30  Gerald Pfeifer  <gerald@pfeifer.com>
+
+	* doc/xml/manual/status_cxx2017.xml: Update reference to openDPL
+	Parallel API.
+	* doc/xml/manual/status_cxx2020.xml: Ditto.
+	* doc/html/manual/status.html: Regenerate.
+
+2026-09-14  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	PR libstdc++/124121
+	* include/std/inplace_vector (inplace_vector::_M_init): Remove
+	unnecessary start_lifetime_as call. Emit error using
+	__builtin_constexpr_diag.
+
+2026-09-14  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-09-10  Jonathan Wakely  <jwakely@redhat.com>
+
+	PR libstdc++/127220
+	* include/std/format (__format::_Arg_t): Move definition
+	earlier.
+	(basic_format_parse_context::check_dynamic_spec): Construct
+	array of _Arg_t from template parameter list.
+	(basic_format_parse_context::check_dynamic_spec_integral):
+	Construct array of _Arg_t based on supported types.
+	(basic_format_parse_context::check_dynamic_spec_string):
+	Likewise.
+	(basic_format_parse_context::__check_dynamic_spec): Replace
+	template parameter list with span<const _Arg_t> function
+	parameter and simplify accordingly. Define in class body.
+	(basic_format_parse_context::_Scan_parse_context): New struct
+	the replaces _Scanner::_Parse_context.
+	(__format::_Scanner::_M_pc): Change type to _Scan_parse_context.
+
+2026-09-14  Steven Sudit  <stevensudit@gmail.com>
+
+	Backported from master:
+	2026-09-09  Steven Sudit  <stevensudit@gmail.com>
+
+	PR libstdc++/127219
+	* include/std/format
+	(basic_format_parse_context::__valid_types_for_check_dynamic_spec):
+	Make static, so that the static_assert in check_dynamic_spec does
+	not use this.
+
+2026-09-14  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	Backported from master:
+	2026-09-10  Tomasz Kamiński  <tkaminsk@redhat.com>
+		    Marco Falke  <falke.marco@gmail.com>
+
+	PR libstdc++/126949
+	* include/bits/hashtable_policy.h (_Hash_code_base::_M_hash)
+	(_Hashtable_base::_M_equal, _Hashtable_alloc::_M_alloc):
+	Value initialized members in NSDMI.
+	* testsuite/23_containers/unordered_map/cons/default.cc: Check
+	default construction with an hash, equality and allocator with
+	explicit constructor.
+	* testsuite/23_containers/unordered_set/cons/default.cc: Likewise.
+
+2026-09-11  Avi Kivity  <avi@scylladb.com>
+
+	Backported from master:
+	2026-09-11  Avi Kivity  <avi@scylladb.com>
+
+	PR libstdc++/127325
+	* include/std/inplace_vector: replace is_trivial_v with
+	is_trivially_default_constructible_v and is_trivially_copyable_v.
+
+2026-09-03  Nathan Myers  <ncm@cantrip.org>
+
+	PR libstdc++/126800
+	* include/bits/hashtable.h: (try_emplace): Call correct helper.
+	* testsuite/23_containers/unordered_map/modifiers/hetero/insert.cc:
+	whether key arguments have been copied.
+
+2026-08-31  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	Backported from master:
+	2026-08-31  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	PR libstdc++/118665
+	* include/bits/uniform_int_dist.h (uniform_int_distribution::_S_nd):
+	Substract __min (_Urbg::min()) from each generator invocation.
+	* testsuite/26_numerics/random/uniform_int_distribution/operators/values.cc:
+	Add testDiscreteDist for shifted (with non-zero min()) engine.
+
+2026-08-31  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	Backported from master:
+	2026-08-27  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	PR libstdc++/123510
+	* src/c++20/tzdb.cc (at_time::is_indicator): Add case labels
+	for uppercase letters.
+	(operator>>(istream&, years_from_to)): Check for 'M' and 'O',
+	(chrono::reload_tzdb): Add case labels for lowercase letters,
+	and normalize first letter of type.
+	(operator>>(istream&, abbrev_month&)): Match all cases in
+	switch and days_chars.
+	(operator>>(istream&, on_month_day&)): Check for 'L'.
+	* testsuite/std/time/tzdb/name_matching.cc: New test.
+
+2026-08-25  Matthias Kretz  <m.kretz@gsi.de>
+
+	Backported from master:
+	2026-08-18  Matthias Kretz  <m.kretz@gsi.de>
+
+	PR libstdc++/122981
+	* include/experimental/bits/simd.h (__int_for_sizeof): Return
+	int32_t, int8_t, int16_t, and int64_t, rather than int, signed
+	char, short, long, and long long.
+	* include/experimental/bits/simd_neon.h (_S_popcount): Cast
+	elements to int8_t, int16_t, int32_t, or int64_t, rather than
+	signed char, short, int, or long.
+
+2026-08-25  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-08-24  Jonathan Wakely  <jwakely@redhat.com>
+
+	PR libstdc++/127006
+	* include/std/spanstream (basic_ospanstream(span, openmode)):
+	Add correct openmode value to parameter.
+	* testsuite/27_io/spanstream/127006.cc: New test.
+
 2026-08-21  Jonathan Wakely  <jwakely@redhat.com>
 
 	Backported from master:
