@@ -25,21 +25,22 @@
  * priority-inheritance-aware mutex.
  *
  * User-space implements the fast-path using a compare-and-swap atomic
- * operation, with acquire/release semantics, on a `status` machine-word
- * in kernel-user memory.
+ * operation (with acquire/release semantics) on the `status` machine-word
+ * in kernel-user memory that is associated with the mutex on its creation
+ * (see l4_factory_create_pi_mutex()).
  *
  * |  [63/31 .. L4_CAP_SHIFT]  | ... |      0      |
  * |:-------------------------:|:---:|:-----------:|
  * |      thread cap slot      |     | waiter flag |
  *
  * When a thread wants to acquire a PI mutex, it first tries to do so via the
- * fast path: `cas(&status, 0, self_thread_cap())`
+ * fast path: `cas(&status, 0, self_thread_cap)`
  * If the mutex is uncontended the cas succeeds and the thread becomes the owner
  * of mutex. Otherwise, the thread needs to enter the slow path via
  * `l4_pi_mutex_lock()` and the kernel takes over.
  *
  * When a thread wants to release a PI mutex, it first tries to do so via the
- * fast path: `cas(&status, self_thread_cap(), 0)`
+ * fast path: `cas(&status, self_thread_cap, 0)`
  * If the mutex is uncontended, i.e. the waiter flag is not set, the cas
  * succeeds. Otherwise, the thread needs to enter the slow path via
  * `l4_pi_mutex_unlock()` and the kernel takes over.
@@ -64,7 +65,7 @@
  *                      certain circumstances, try again.
  * \retval -L4_EDEADLK  Deadlock condition was detected or the calling thread
  *                      already owns the mutex.
- * \retval -L4_EINVAL   Invalid parameter or ku_status in invalid state.
+ * \retval -L4_EINVAL   Invalid parameter or `ku_status` in invalid state.
  *
  * \retval L4_IPC_RETIMEOUT   Timeout expired before mutex could be locked.
  * \retval L4_IPC_RECANCELED  Thread was cancelled while waiting on the mutex.
@@ -88,7 +89,7 @@ l4_pi_mutex_lock_u(l4_cap_idx_t mutex, l4_timeout_t timeout,
  *
  * \return Syscall return tag. Use l4_error() to check for errors.
  * \retval 0            Success.
- * \retval -L4_EINVAL   Invalid parameter or ku_status in invalid state.
+ * \retval -L4_EINVAL   Invalid parameter or `ku_status` in invalid state.
  * \retval -L4_EPERM    Calling thread was not the owner of the mutex.
  */
 L4_INLINE l4_msgtag_t

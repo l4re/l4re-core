@@ -328,7 +328,7 @@ l4_factory_create_thread_group(l4_cap_idx_t factory,
  *
  * \retval L4_EOK      No error occurred.
  * \retval -L4_ENOMEM  Out-of-memory during allocation of the mutex object.
- * \retval -L4_EINVAL  Invalid ku_status or task_cap parameter.
+ * \retval -L4_EINVAL  Invalid `ku_status` or `task_cap` parameter.
  * \retval -L4_EPERM   Insufficient permissions; see precondition.
  * \retval -L4_ENODEV  Priority inheritance mutexes not supported.
  *
