@@ -610,11 +610,12 @@ define SRC_stdio
   vsscanf
 endef
 
+# LIBC_BUILD_MODE=minimal: CURRENT_LOCALE = C_LOCALE
 define SRC_stdio_wchar
-  fgetwc
-  fgetws
-  fputwc
-  fputws
+  $(if $(LIBC_BUILD_MINIMAL),,fgetwc)
+  $(if $(LIBC_BUILD_MINIMAL),,fgetws)
+  $(if $(LIBC_BUILD_MINIMAL),,fputwc)
+  $(if $(LIBC_BUILD_MINIMAL),,fputws)
   fwide
   fwprintf
   fwscanf
@@ -627,7 +628,7 @@ define SRC_stdio_wchar
   putwchar
   swprintf
   swscanf
-  ungetwc
+  $(if $(LIBC_BUILD_MINIMAL),,ungetwc)
   vfwprintf
   vfwscanf
   vswprintf

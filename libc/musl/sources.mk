@@ -11,10 +11,10 @@ DIRS-full    += termios network
 DIRS         := $(DIRS-$(LIBC_BUILD_MODE))
 
 # Sub Modules
-SUB_MODULES-all     :=
+SUB_MODULES-all     := wchar
 
 SUB_MODULES-minimal := $(SUB_MODULES-all)
-SUB_MODULES-full    := $(SUB_MODULES-all) wchar \
+SUB_MODULES-full    := $(SUB_MODULES-all) \
                        $(if $(BID_VARIANT_FLAG_NOFPU),,fp)
 
 SUB_MODULES := $(SUB_MODULES-$(LIBC_BUILD_MODE))
