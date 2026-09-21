@@ -1,7 +1,6 @@
 define HDR_arm
   bits/arm_asm.h
   bits/arm_bx.h
-  $(if $(BID_COMPILER_IS_CLANG),unwind.h)
 endef
 
 define HDR_mips

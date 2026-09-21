@@ -4,7 +4,14 @@ include $(L4DIR)/mk/Makeconf
 LIBGCC_CONTRIB_MIN_VERSION := 11
 LIBGCC_CONTRIB_MAX_VERSION := 16
 LIBGCC_CONTRIB_SUPPORTED_VERSIONS := $(shell seq $(LIBGCC_CONTRIB_MIN_VERSION) $(LIBGCC_CONTRIB_MAX_VERSION))
+ifeq ($(BID_COMPILER_TYPE),clang)
+# Clang cannot compile libgcc, only the unwind headers are used from the libgcc
+# sources. Clang's version does not relate to any GCC version, so just take the
+# most recent one.
+LIBGCC_CONTRIB_VERSION := $(LIBGCC_CONTRIB_MAX_VERSION)
+else
 LIBGCC_CONTRIB_VERSION := $(GCCVERSION)
+endif
 
 ifeq ($(filter $(LIBGCC_CONTRIB_VERSION),$(LIBGCC_CONTRIB_SUPPORTED_VERSIONS)),)
 $(warning No suitable libgcc version found for gcc $(LIBGCC_CONTRIB_VERSION).)

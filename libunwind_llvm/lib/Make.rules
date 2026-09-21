@@ -6,6 +6,11 @@ PC_LIBS         =
 PC_LINK_LIBS    = -lunwind_llvm
 PC_LINK_LIBS_PIC = $(PC_LINK_LIBS)
 
+# libsupc++/libstdc++ require a GCC compatible unwind.h. Clang's unwind.h lacks
+# the GCC specifics, most notably proper Arm EHABI support. Hence use the
+# unwind headers from the libgcc sources directly.
+CONTRIB_INCDIR  = libgcc_eh
+
 # Avoid circular dependency, as this package is part of the compiler runtime.
 COMPILER_RT     =
 

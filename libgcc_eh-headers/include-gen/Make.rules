@@ -7,6 +7,12 @@ COMPILER_RT     =
 
 LIBGCC_PKG_DIR  = $(PKGDIR)/../libgcc
 include $(LIBGCC_PKG_DIR)/build/src/Makefile.libgcc
+include $(PKGDIR)/headers.inc
 
-# Ensure that unwind.h is symlinked.
-all:: $(LIBGCC_LINK_DIR)/unwind.h
+# unwind.h itself is already symlinked by the libgcc build rules. The auxiliary
+# headers it includes are not, so link them here.
+$(foreach h,$(filter-out unwind.h,$(UNWIND_HEADERS)), \
+  $(eval $(call libgcc_link_rule,$h,$(LIBGCC_CONTRIB_DIR)/gcc/ginclude/$h)))
+
+# Ensure that the unwind headers are symlinked.
+all:: $(addprefix $(LIBGCC_LINK_DIR)/,$(UNWIND_HEADERS))

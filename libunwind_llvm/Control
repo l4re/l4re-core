@@ -1,3 +1,3 @@
 provides: libunwind_llvm
-requires: libc-headers ldscripts l4sys
+requires: libc-headers ldscripts l4sys libgcc_eh-headers
 maintainer: georg.kotheimer@kernkonzept.com
