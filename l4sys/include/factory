@@ -480,6 +480,36 @@ public:
                                             policy, utcb);
   }
 
+  /**
+   * Create a new priority inheritance mutex.
+   *
+   * The priority inheritance mutex is bound to the specified task.
+   *
+   * \param[out] target_cap  The kernel stores the new mutex's capability into
+   *                         this slot.
+   * \param      ku_status   Address of mutex status field in kernel-user memory
+   *                         of specified task.
+   * \param      task_cap    Task the mutex gets bound to.
+   * \utcb_def{utcb}
+   *
+   * \return Syscall return tag containing one of the following return codes.
+   *
+   * \retval L4_EOK      No error occurred.
+   * \retval -L4_ENOMEM  Out-of-memory during allocation of the mutex object.
+   * \retval -L4_EINVAL  Invalid `ku_status` or `task_cap` parameter.
+   * \retval -L4_EPERM   Insufficient permissions; see precondition.
+   * \retval -L4_ENODEV  Priority inheritance mutexes not supported.
+   *
+   * \pre The capability `task_cap` must have the permission #L4_CAP_FPAGE_S.
+   */
+  l4_msgtag_t create_pi_mutex(Cap<Pi_mutex> const &target_cap,
+                              l4_addr_t ku_status, Cap<Task> const &task_cap,
+                              l4_utcb_t *utcb = l4_utcb()) noexcept
+  {
+    return l4_factory_create_pi_mutex_u(cap(), target_cap.cap(), ku_status,
+                                        task_cap.cap(), utcb);
+  }
+
   typedef L4::Typeid::Rpc_nocode<create_t> Rpcs;
 };
 

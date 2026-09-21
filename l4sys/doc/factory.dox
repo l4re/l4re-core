@@ -23,6 +23,7 @@ The kernel factory creates the following kinds of objects:
 - L4::Factory
 - L4::Ipc_gate (\ref L4_PROTO_NONE, \ref L4_PROTO_KOBJECT)
 - L4::Irq (\ref L4_PROTO_IRQ_SENDER)
+- L4::Pi_mutex
 - L4::Semaphore
 - L4::Task
 - L4::Thread
@@ -58,6 +59,9 @@ should be provided to a create stream returned by L4::Factory.create().
    - Alternatively, an IPC gate can be immediately bound to a thread upon
      creation using L4::Factory.create_gate().
  - L4::Irq()
+ - L4::Pi_mutex(\ref l4_addr_t, \ref l4_fpage_t)
+   - Arguments: ku_status, task_cap
+   - See L4::Factory.create_pi_mutex() for details.
  - L4::Semaphore()
  - L4::Task(\ref l4_fpage_t)
    - Argument: utcb_area

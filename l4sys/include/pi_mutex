@@ -1,0 +1,86 @@
+// vi:set ft=cpp: -*- Mode: C++ -*-
+/*
+ * Copyright (C) 2025-2026 Kernkonzept GmbH.
+ * Author(s): Georg Kotheimer <georg.kotheimer@kernkonzept.com>
+ *
+ * License: see LICENSE.spdx (in this directory or the directories above)
+ */
+/**
+ * \file
+ */
+#pragma once
+
+#include <l4/sys/kobject>
+#include <l4/sys/pi_mutex.h>
+
+namespace L4 {
+
+/**
+ * C++ L4 kernel interface for controlling priority inheritance mutexes, see
+ * \ref l4_pi_mutex_api for the C interface.
+ *
+ * A priority inheritance mutex (PI mutex) object provides the slow path for a
+ * priority-inheritance-aware mutex.
+ *
+ * User-space implements the fast-path using a compare-and-swap atomic
+ * operation (with acquire/release semantics) on the `status` machine-word
+ * in kernel-user memory that is associated with the mutex on its creation
+ * (see L4::Factory::create_pi_mutex()).
+ *
+ * |  [63/31 .. L4_CAP_SHIFT]  | ... |      0      |
+ * |:-------------------------:|:---:|:-----------:|
+ * |      thread cap slot      |     | waiter flag |
+ *
+ * When a thread wants to acquire a PI mutex, it first tries to do so via the
+ * fast path: `cas(&status, 0, self_thread_cap)`
+ * If the mutex is uncontended the cas succeeds and the thread becomes the owner
+ * of mutex. Otherwise, the thread needs to enter the slow path via
+ * `Pi_mutex::lock()` and the kernel takes over.
+ *
+ * When a thread wants to release a PI mutex, it first tries to do so via the
+ * fast path: `cas(&status, self_thread_cap, 0)`
+ * If the mutex is uncontended, i.e. the waiter flag is not set, the cas
+ * succeeds. Otherwise, the thread needs to enter the slow path via
+ * `Pi_mutex::unlock()` and the kernel takes over.
+ */
+class L4_EXPORT Pi_mutex : public Kobject_0t<Pi_mutex, L4_PROTO_PI_MUTEX>
+{
+public:
+  /**
+   * Lock contended priority inheritance mutex on slow path.
+   *
+   * \param timeout    Timeout for blocking the mutex lock operation.
+   *                   Note: The receive timeout of this timeout-pair is
+   *                   significant for blocking, the send part is usually
+   *                   non-blocking.
+   * \utcb_def{utcb}
+   *
+   * \return Syscall return tag. Use l4_error() to check for errors.
+   * \retval L4_EOK       Success.
+   * \retval -L4_EAGAIN   Lock operation in kernel failed, can happen under
+   *                      certain circumstances, try again.
+   * \retval -L4_EDEADLK  Deadlock condition was detected or the calling thread
+   *                      already owns the mutex.
+   * \retval -L4_EINVAL   Invalid parameter or `ku_status` in invalid state.
+   *
+   * \retval L4_IPC_RETIMEOUT   Timeout expired before mutex could be locked.
+   * \retval L4_IPC_RECANCELED  Thread was cancelled while waiting on the mutex.
+   */
+  l4_msgtag_t lock(l4_timeout_t timeout, l4_utcb_t *utcb = l4_utcb()) noexcept
+  { return l4_pi_mutex_lock_u(cap(), timeout, utcb); }
+
+  /**
+   * Unlock contended priority inheritance mutex from fast path or slow path.
+   *
+   * \utcb_def{utcb}
+   *
+   * \return Syscall return tag. Use l4_error() to check for errors.
+   * \retval L4_EOK       Success.
+   * \retval -L4_EINVAL   Invalid parameter or `ku_status` in invalid state.
+   * \retval -L4_EPERM    Calling thread was not the owner of the mutex.
+   */
+  l4_msgtag_t unlock(l4_utcb_t *utcb = l4_utcb()) noexcept
+  { return l4_pi_mutex_unlock_u(cap(), utcb); }
+};
+
+}
