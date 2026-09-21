@@ -67,14 +67,14 @@ typedef struct l4re_env_cap_entry_t
   /**
    * Create an entry with the name \a n, capability \a c, and flags \a f.
    *
-   * \param n is the name of the initial object.
+   * \param n is the name of the initial object. Must not be NULL.
    * \param c is the capability index that refers the initial object.
    * \param f are the additional flags for the object.
    */
   l4re_env_cap_entry_t(char const *n, l4_cap_idx_t c, l4_umword_t f = 0) L4_NOTHROW
   : cap(c), flags(f)
   {
-    for (unsigned i = 0; n && i < sizeof(name); ++i, ++n)
+    for (unsigned i = 0; i < sizeof(name); ++i, ++n)
       {
         name[i] = *n;
 	if (!*n)
