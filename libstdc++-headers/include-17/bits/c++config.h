@@ -46,7 +46,7 @@
 
 // The datestamp of the C++ library in compressed ISO date format.
 #undef __GLIBCXX__ /* The testsuite defines it to 99999999 to block PCH.  */
-#define __GLIBCXX__ 20260823
+#define __GLIBCXX__ 20260927
 
 // Macros for various attributes.
 //   _GLIBCXX_PURE
@@ -968,6 +968,10 @@ namespace __gnu_cxx
 #include <pstl/pstl_config.h>
 #endif // __has_include
 #endif // C++17
+
+#if __cplusplus >= 201103L && !defined(_GLIBCXX_USE_NEW_PIECEWISE_DISTRIBUTIONS)
+# define _GLIBCXX_USE_NEW_PIECEWISE_DISTRIBUTIONS 1
+#endif
 
 #pragma GCC diagnostic pop
 

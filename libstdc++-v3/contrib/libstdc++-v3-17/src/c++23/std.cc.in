@@ -695,6 +695,10 @@ export namespace std
 #if __cpp_lib_byteswap // >= C++23
   using std::byteswap;
 #endif
+#if __cpp_lib_bitops >= 202606L // >= C++29
+  using std::shl;
+  using std::shr;
+#endif
 }
 
 // 22.9 <bitset>
@@ -2073,6 +2077,9 @@ export namespace std
 #endif
 #ifdef __glibcxx_allocate_at_least
   using std::allocation_result;
+#endif
+#if __cpp_lib_start_lifetime
+  using std::start_lifetime;
 #endif
 }
 
@@ -3609,6 +3616,9 @@ export namespace std
 #if __glibcxx_is_structural >= 202603L
   using std::is_structural;
   using std::is_structural_v;
+#endif
+#if __cpp_lib_within_lifetime >= 202306L
+  using std::is_within_lifetime;
 #endif
 }
 

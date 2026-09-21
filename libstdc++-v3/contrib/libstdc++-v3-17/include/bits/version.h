@@ -989,7 +989,12 @@
 #undef __glibcxx_want_bit_cast
 
 #if !defined(__cpp_lib_bitops)
-# if (__cplusplus >= 202002L)
+# if (__cplusplus >  202603L)
+#  define __glibcxx_bitops 202606L
+#  if defined(__glibcxx_want_all) || defined(__glibcxx_want_bitops)
+#   define __cpp_lib_bitops 202606L
+#  endif
+# elif (__cplusplus >= 202002L)
 #  define __glibcxx_bitops 201907L
 #  if defined(__glibcxx_want_all) || defined(__glibcxx_want_bitops)
 #   define __cpp_lib_bitops 201907L
@@ -2556,6 +2561,16 @@
 #endif /* !defined(__cpp_lib_modules) */
 #undef __glibcxx_want_modules
 
+#if !defined(__cpp_lib_start_lifetime)
+# if (__cplusplus >  202302L) && (__has_builtin(__builtin_start_lifetime))
+#  define __glibcxx_start_lifetime 202603L
+#  if defined(__glibcxx_want_all) || defined(__glibcxx_want_start_lifetime)
+#   define __cpp_lib_start_lifetime 202603L
+#  endif
+# endif
+#endif /* !defined(__cpp_lib_start_lifetime) */
+#undef __glibcxx_want_start_lifetime
+
 #if !defined(__cpp_lib_inplace_vector)
 # if (__cplusplus >  202302L)
 #  define __glibcxx_inplace_vector 202603L
@@ -2565,6 +2580,16 @@
 # endif
 #endif /* !defined(__cpp_lib_inplace_vector) */
 #undef __glibcxx_want_inplace_vector
+
+#if !defined(__cpp_lib_constexpr_inplace_vector)
+# if (__cplusplus >  202302L) && (__glibcxx_start_lifetime)
+#  define __glibcxx_constexpr_inplace_vector 202502L
+#  if defined(__glibcxx_want_all) || defined(__glibcxx_want_constexpr_inplace_vector)
+#   define __cpp_lib_constexpr_inplace_vector 202502L
+#  endif
+# endif
+#endif /* !defined(__cpp_lib_constexpr_inplace_vector) */
+#undef __glibcxx_want_constexpr_inplace_vector
 
 #if !defined(__cpp_lib_indirect)
 # if (__cplusplus >  202302L) && _GLIBCXX_HOSTED
@@ -2748,6 +2773,16 @@
 # endif
 #endif /* !defined(__cpp_lib_valarray) */
 #undef __glibcxx_want_valarray
+
+#if !defined(__cpp_lib_within_lifetime)
+# if (__cplusplus >  202302L) && (__has_builtin(__builtin_is_within_lifetime))
+#  define __glibcxx_within_lifetime 202603L
+#  if defined(__glibcxx_want_all) || defined(__glibcxx_want_within_lifetime)
+#   define __cpp_lib_within_lifetime 202603L
+#  endif
+# endif
+#endif /* !defined(__cpp_lib_within_lifetime) */
+#undef __glibcxx_want_within_lifetime
 
 #if !defined(__cpp_lib_hardened_array)
 # if (__cplusplus >= 201103L) && (defined(_GLIBCXX_ASSERTIONS))
