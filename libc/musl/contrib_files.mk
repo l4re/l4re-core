@@ -491,6 +491,7 @@ define SRC_thread
   $(if $(LIBC_BUILD_MINIMAL),,$(if $(filter x86,$(BUILD_ARCH)),tls))
   default_attr
   lock_ptc
+  $(if $(filter arm,$(BUILD_ARCH)),__aeabi_read_tp atomics)
 endef
 
 DEFINES___lock.c += -D_GNU_SOURCE
