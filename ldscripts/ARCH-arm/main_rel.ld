@@ -5,13 +5,22 @@
    notice and this notice are preserved.  */
 /* Set entry address for shared library via -e */
 /* ENTRY(_start) */
+PHDRS
+{
+  phdr PT_PHDR PHDRS;
+  phdr_readexec PT_LOAD FILEHDR PHDRS;
+  phdr_writable PT_LOAD;
+  phdr_dynamic PT_DYNAMIC;
+  phdr_tls 0x7 FLAGS(4);
+  phdr_ehframe 0x6474e550;
+}
 SECTIONS
 {
   /* Read-only sections, merged into text segment: */
   L4_SET_BASE(0);
   .note.gnu.build-id : { *(.note.gnu.build-id) }
-  .hash           : { *(.hash) }
-  .gnu.hash       : { *(.gnu.hash) }
+  .hash           : { *(.hash) } :phdr_readexec
+  .gnu.hash       : { *(.gnu.hash) } :phdr_readexec
   .dynsym         : { *(.dynsym) }
   .dynstr         : { *(.dynstr) }
   .gnu.version    : { *(.gnu.version) }
@@ -38,7 +47,7 @@ SECTIONS
   .rel.dtors      : { *(.rel.dtors) }
   .rela.dtors     : { *(.rela.dtors) }
   .rel.got        : { *(.rel.got) }
-  .rela.got       : { *(.rela.got) }
+  .rela.got       : { *(.rela.got) } :phdr_readexec
   .rel.bss        : { *(.rel.bss .rel.bss.* .rel.gnu.linkonce.b.*) }
   .rela.bss       : { *(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*) }
   .rel.iplt       :
@@ -73,7 +82,7 @@ SECTIONS
     /* .gnu.warning sections are handled specially by elf32.em.  */
     *(.gnu.warning)
     *(.glue_7t) *(.glue_7) *(.vfp11_veneer) *(.v4_bx)
-  }
+  } :phdr_readexec
   .fini           :
   {
     KEEP (*(SORT_NONE(.fini)))
@@ -87,8 +96,8 @@ SECTIONS
    PROVIDE_HIDDEN (__exidx_start = .);
   .ARM.exidx   : { *(.ARM.exidx* .gnu.linkonce.armexidx.*) }
    PROVIDE_HIDDEN (__exidx_end = .);
-  .eh_frame_hdr : { *(.eh_frame_hdr) *(.eh_frame_entry .eh_frame_entry.*) }
-  .eh_frame       : ONLY_IF_RO { KEEP (*(.eh_frame)) *(.eh_frame.*) }
+   .eh_frame_hdr : { *(.eh_frame_hdr) *(.eh_frame_entry .eh_frame_entry.*) } :phdr_readexec :phdr_ehframe
+   .eh_frame       : ONLY_IF_RO { KEEP (*(.eh_frame)) *(.eh_frame.*) } :phdr_readexec
   .gcc_except_table   : ONLY_IF_RO { *(.gcc_except_table
   .gcc_except_table.*) }
   .gnu_extab   : ONLY_IF_RO { *(.gnu_extab*) }
@@ -106,8 +115,8 @@ SECTIONS
   .gcc_except_table   : ONLY_IF_RW { *(.gcc_except_table .gcc_except_table.*) }
   .exception_ranges   : ONLY_IF_RW { *(.exception_ranges .exception_ranges*) }
   /* Thread Local Storage sections  */
-  .tdata	  : { *(.tdata .tdata.* .gnu.linkonce.td.*) }
-  .tbss		  : { *(.tbss .tbss.* .gnu.linkonce.tb.*) *(.tcommon) }
+  .tdata	  : { *(.tdata .tdata.* .gnu.linkonce.td.*) } :phdr_writable :phdr_tls
+  .tbss		  : { *(.tbss .tbss.* .gnu.linkonce.tb.*) *(.tcommon) } :phdr_tls
   .preinit_array     :
   {
     KEEP (*(.preinit_array))
@@ -116,12 +125,12 @@ SECTIONS
   {
     KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
     KEEP (*(.init_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .ctors))
-  }
+  } :phdr_writable
   .fini_array     :
   {
     KEEP (*(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*)))
     KEEP (*(.fini_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .dtors))
-  }
+  } :phdr_writable
   .ctors          :
   {
     /* gcc uses crtbegin.o to find the start of
@@ -153,15 +162,15 @@ SECTIONS
   }
   .jcr            : { KEEP (*(.jcr)) }
   .data.rel.ro : { *(.data.rel.ro.local* .gnu.linkonce.d.rel.ro.local.*) *(.data.rel.ro .data.rel.ro.* .gnu.linkonce.d.rel.ro.*) }
-  .dynamic        : { *(.dynamic) }
+  .dynamic        : { *(.dynamic) } :phdr_writable :phdr_dynamic
   . = DATA_SEGMENT_RELRO_END (0, .);
-  .got            : { *(.got.plt) *(.igot.plt) *(.got) *(.igot) }
+  .got            : { *(.got.plt) *(.igot.plt) *(.got) *(.igot) } :phdr_writable
   .data           :
   {
     PROVIDE (__data_start = .);
     *(.data .data.* .gnu.linkonce.d.*)
     SORT(CONSTRUCTORS)
-  }
+  } :phdr_writable
   .data1          : { *(.data1) }
   _edata = .; PROVIDE (edata = .);
   . = .;
@@ -178,7 +187,7 @@ SECTIONS
       FIXME: Why do we need it? When there is no .bss section, we don't
       pad the .data section.  */
    . = ALIGN(. != 0 ? 32 / 8 : 1);
-  }
+  } :phdr_writable
   _bss_end__ = . ; __bss_end__ = . ;
   . = ALIGN(32 / 8);
   . = SEGMENT_START("ldata-segment", .);
