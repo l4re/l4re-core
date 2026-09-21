@@ -1865,7 +1865,6 @@ void __dls2b(size_t *sp, size_t *auxv)
 	else ((stage3_func)laddr(&ldso, dls3_def.sym->st_value))(sp, auxv);
 }
 
-extern weak hidden void (*const __init_array_start)(void), (*const __init_array_end)(void);
 extern weak hidden void (*const __preinit_array_start)(void), (*const __preinit_array_end)(void);
 /* Stage 3 of the dynamic linker is called with the dynamic linker/libc
  * fully functional. Its job is to load (if not already loaded) and
