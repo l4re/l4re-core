@@ -300,8 +300,8 @@ L4_INLINE l4_umword_t l4_bdr(l4_umword_t mem, l4_umword_t io, l4_umword_t obj,
  *
  * \param  pint  Point in time in clocks
  * \param  br    The buffer register the timeout shall be placed in.
- *               (\note On 32bit architectures the timeout needs two
- *               consecutive buffers.)
+ *               \note On 32bit architectures the timeout needs two
+ *               consecutive buffers.
  * \param  utcb  Utcb to put the absolute timeout in.
  *
  * \return timeout value
@@ -315,8 +315,8 @@ l4_timeout_s l4_timeout_abs_u(l4_kernel_clock_t pint, int br,
  *
  * \param  pint  Point in time in clocks
  * \param  br    The buffer register the timeout shall be placed in.
- *               (\note On 32bit architectures the timeout needs two
- *               consecutive buffers.)
+ *               \note On 32bit architectures the timeout needs two
+ *               consecutive buffers.
  *
  * \note The absolute timeout value will be placed into the buffer register
  * \a br of the current thread.
