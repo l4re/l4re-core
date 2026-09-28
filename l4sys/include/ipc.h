@@ -417,9 +417,11 @@ l4_ipc_reply(l4_cap_idx_t reply_cap, l4_utcb_t *utcb, l4_msgtag_t tag,
  *
  * \return  result tag
  *
- * A message is sent to the previous caller using the implicit reply
- * capability. Afterwards the invoking thread waits for a message from any
- * source.
+ * A message is sent to a previous caller using the given reply capability.
+ * Afterwards the invoking thread waits for a message from any source.
+ * The reply capability is always invalidated by the call, even if the IPC
+ * operation fails.
+ *
  * \note This is the standard server operation: it sends a reply to the actual
  *       client and waits for the next incoming request, which may come from
  *       any other client.
