@@ -10,6 +10,8 @@ static inline uintptr_t __get_tp(void)
 
 #else
 
+#include <features.h>
+
 #if __ARM_ARCH_4__ || __ARM_ARCH_4T__ || __ARM_ARCH == 4
 #define BLX "mov lr,pc\n\tbx"
 #else
