@@ -134,17 +134,18 @@ using remove_all_extents_t = typename remove_all_extents<T>::type;
 
 template< typename T >
 constexpr T &&
-forward(cxx::remove_reference_t<T> &t)
+forward(cxx::remove_reference_t<T> &t) noexcept
 { return static_cast<T &&>(t); }
 
 template< typename T >
 constexpr T &&
-forward(cxx::remove_reference_t<T> &&t)
+forward(cxx::remove_reference_t<T> &&t) noexcept
 { return static_cast<T &&>(t); }
 
 template< typename T >
 constexpr cxx::remove_reference_t<T> &&
-move(T &&t) { return static_cast<cxx::remove_reference_t<T> &&>(t); }
+move(T &&t) noexcept
+{ return static_cast<cxx::remove_reference_t<T> &&>(t); }
 
 template< bool, typename T = void >
 struct enable_if {};
