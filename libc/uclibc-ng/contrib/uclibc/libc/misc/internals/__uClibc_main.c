@@ -108,6 +108,11 @@ uintptr_t __stack_chk_guard attribute_relro;
 
 void internal_function _dl_aux_init (ElfW(auxv_t) *av);
 
+#ifdef __NOT_FOR_L4__
+// L4Re: Don't try to auto-detect if threading is used. Simple single-threaded
+// servers use libc-minimal instead. The auto-detection would not reliably work
+// for __pthread_mutex_() functions, see also CD-1951. We need to link against
+// the implementations from libpthread instead of __pthread_return_0().
 #ifdef __UCLIBC_HAS_THREADS__
 /*
  * uClibc internal locking requires that we have weak aliases
@@ -144,6 +149,7 @@ _pthread_cleanup_pop_restore(struct _pthread_cleanup_buffer *__buffer,
                 __buffer->__routine(__buffer->__arg);
 }
 #endif /* __UCLIBC_HAS_THREADS__ */
+#endif /* __NOT_FOR_L4__ */
 
 #endif /* !SHARED */
 
