@@ -28,6 +28,7 @@ struct Remote_app_std_caps
     // skip base caps
     External_rm_cap        = 0x10,
     Allocator_cap,
+    User_factory_cap,
     Names_cap,
     Parent_cap,
     Kip_cap,
@@ -84,6 +85,7 @@ public:
     L4Re::Env *env = this->_stack.push(L4Re::Env());
 
     env->mem_alloc(L4::Cap<L4Re::Mem_alloc>(Caps::Allocator_cap << L4_CAP_SHIFT));
+    env->user_factory(L4::Cap<L4::Factory>(Caps::User_factory_cap << L4_CAP_SHIFT));
     env->parent(L4::Cap<L4Re::Parent>(Caps::Parent_cap << L4_CAP_SHIFT));
     env->scheduler(L4::Cap<L4::Scheduler>(Caps::Scheduler_cap << L4_CAP_SHIFT));
     env->rm(L4::Cap<L4Re::Rm>(Caps::External_rm_cap << L4_CAP_SHIFT));
@@ -195,6 +197,8 @@ public:
     if (l4_is_fpage_valid(this->_info.dbg_events))
       chksys(_ntask->map(L4Re::This_task, this->_info.dbg_events,
              env->dbg_events().snd_base()));
+    chksys(_ntask->map(L4Re::This_task, this->_info.user_factory,
+	  env->user_factory().snd_base()));
     chksys(_ntask->map(L4Re::This_task, this->local_kip_cap().fpage(),
 	  prog_kip_ds().snd_base()));
 

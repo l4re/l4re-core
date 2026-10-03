@@ -12,9 +12,6 @@ local _ENV = require "L4"
 local string = require "string"
 local table = require "table"
 
--- Add this alias, it sounds better for some cases
-Env.user_factory = Env.mem_alloc;
-
 -- L4 protocol constants
 Proto = {
   Dataspace = 0x4000,
