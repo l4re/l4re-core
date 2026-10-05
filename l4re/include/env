@@ -191,6 +191,65 @@ namespace L4Re
     { return _env.caps; }
 
     /**
+     * Range of the entries in the initial objects array.
+     *
+     * Use initial_caps_iter() to get one.
+     */
+    class Cap_entry_range
+    {
+    public:
+      /// Forward iterator over the initial objects array.
+      class Iterator
+      {
+      public:
+        explicit Iterator(Cap_entry const *e) noexcept : _e(e) {}
+
+        Cap_entry const &operator * () const noexcept { return *_e; }
+        Cap_entry const *operator -> () const noexcept { return _e; }
+
+        Iterator &operator ++ () noexcept
+        { ++_e; return *this; }
+
+        Iterator operator ++ (int) noexcept
+        { Iterator i = *this; ++_e; return i; }
+
+        /// Iterators at the end of the array are equal, no matter where it is.
+        bool operator == (Iterator const &o) const noexcept
+        { return at_end() ? o.at_end() : _e == o._e; }
+
+        bool operator != (Iterator const &o) const noexcept
+        { return !operator == (o); }
+
+      private:
+        // the array ends with an invalid entry
+        bool at_end() const noexcept
+        { return !_e || !*_e; }
+
+        Cap_entry const *_e;
+      };
+
+      explicit Cap_entry_range(Cap_entry const *first) noexcept
+      : _first(first) {}
+
+      Iterator begin() const noexcept { return Iterator(_first); }
+      Iterator end() const noexcept { return Iterator(nullptr); }
+
+    private:
+      Cap_entry const *_first;
+    };
+
+    /**
+     * Iterate over the entries of the initial objects array.
+     *
+     * \return Range of all entries, to be used in a range-based for loop:
+     *
+     *     for (auto const &e : L4Re::Env::env()->initial_caps_iter())
+     *       printf("%.*s\n", e.get_name().len(), e.get_name().start());
+     */
+    Cap_entry_range initial_caps_iter() const noexcept
+    { return Cap_entry_range(_env.caps); }
+
+    /**
      * Get the Cap_entry for the object named `name`.
      * \param name  Name of the object to lookup in the initial objects.
      * \param l     Length of the name string, thus `name` may or may not be
