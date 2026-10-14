@@ -131,7 +131,7 @@ basic building blocks for the application coming from a dedicated loader,
 such as Moe or a Loader instance. These building blocks are a region map (Rm),
 a scheduler, a memory allocator, and a logging facility.
 A L4.Loader object is typically used to start multiple applications. There
-is a L4.default_loader instance of L4.Loader that uses the L4.Env.mem_alloc
+is a L4.default_loader instance of L4.Loader that uses the L4.Env.user_factory
 factory of the current Ned instance to create the objects for a new program.
 However you may also use a more restricted factory for applications and
 instantiate a loader for them.  The L4.Loader objects can already be used

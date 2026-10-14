@@ -305,7 +305,8 @@ public:
     L4Re::Util::Ref_cap<L4::Factory>::Cap user_factory
       = L4Re::Env::env()->user_factory();
 
-    prog_info()->mem_alloc = user_factory.fpage();
+    prog_info()->mem_alloc = L4Re::Env::env()->mem_alloc().fpage();
+    prog_info()->user_factory = user_factory.fpage();
     prog_info()->log = L4Re::Env::env()->log().is_valid()
                         ? L4Re::Env::env()->log().fpage()
                         : l4_fpage_invalid();
@@ -328,6 +329,7 @@ public:
 
     _cap_stack.push(_cfg_cap<void>("log", &prog_info()->log));
     _cap_stack.push(_cfg_cap<void>("mem", &prog_info()->mem_alloc));
+    _cap_stack.push(_cfg_cap<void>("user_factory", &prog_info()->user_factory));
     _cap_stack.push(_cfg_cap<void>("factory", &prog_info()->factory));
     _cap_stack.push(_cfg_cap<void>("scheduler", &prog_info()->scheduler));
     _cap_stack.push(_cfg_cap<void>("dbg_events", &prog_info()->dbg_events));

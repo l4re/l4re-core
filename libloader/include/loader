@@ -40,6 +40,7 @@ struct Prog_start_info
 
   l4_fpage_t parent;
   l4_fpage_t mem_alloc;
+  l4_fpage_t user_factory;
   l4_fpage_t scheduler;
   l4_fpage_t rm;
   l4_fpage_t log;

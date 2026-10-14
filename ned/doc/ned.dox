@@ -58,8 +58,8 @@ or the \c query and \c register operations on a name space.
 
 The initial objects provided to Ned itself are accessible via the table
 \c L4.Env.  The default (usually unnamed) capabilities are accessible
-as \c factory, \c log, \c mem_alloc, \c parent, \c rm, and \c scheduler in
-the \c L4.Env table.
+as \c factory, \c log, \c mem_alloc, \c user_factory, \c parent, \c rm, and
+\c scheduler in the \c L4.Env table.
 
 
 \subsection l4re_ned_lua_consts Constants
