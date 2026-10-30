@@ -119,6 +119,7 @@ typedef struct l4re_env_t
   l4_cap_idx_t log;            /**< Logging object-capability */
   l4_cap_idx_t main_thread;    /**< Object-capability of the first user thread */
   l4_cap_idx_t factory;        /**< Object-capability of the factory available to the task */
+  l4_cap_idx_t user_factory;   /**< Object capability of the user-level factory available to the task */
   l4_cap_idx_t scheduler;      /**< Object capability for the scheduler set to use */
   l4_cap_idx_t itas;           /**< ITAS services object-capability */
   l4_cap_idx_t dbg_events;     /**< Object-capability of the debug events service */

@@ -268,7 +268,10 @@ Moe_app_model::init_prog()
   Dbg info(Dbg::Info);
 
   Allocator *allocator = Allocator::root_allocator();
+  // By default, we set the memory allocator and the user_factory to the same
+  // cap (moe's root allocator).
   _info.mem_alloc = allocator->obj_cap().fpage();
+  _info.user_factory = allocator->obj_cap().fpage();
   if (auto log = L4Re::Env::env()->log())
     _info.log = log.fpage();
   else

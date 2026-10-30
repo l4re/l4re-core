@@ -36,6 +36,7 @@ public:
 
     register_cap(l, "parent", e->parent());
     register_cap(l, "mem_alloc", e->mem_alloc(), L4::Factory::Protocol);
+    register_cap(l, "user_factory", e->user_factory(), L4::Factory::Protocol);
     register_cap(l, "rm", e->rm());
     register_cap(l, "log", e->log());
     register_cap(l, "factory", e->factory(), L4::Factory::Protocol);
