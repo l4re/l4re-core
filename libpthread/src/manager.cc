@@ -510,23 +510,34 @@ static l4_utcb_t *l4pthr_allocate_more_utcbs_and_claim_utcb()
       e->rm()->free_area(kumem);
       return nullptr;
     }
+  l4_size_t kumem_size = L4_PAGESIZE;
 #else
-  // On systems without MMU the kernel determines the actual location.
-  l4_fpage_t fp = l4_fpage(0, L4_PAGESHIFT, L4_FPAGE_RW);
+  /*
+   * On systems without MMU the kernel determines the actual location. Allocate
+   * several pages at once so that the UTCBs share one contiguous mapping.
+   */
+  unsigned order = L4_PAGESHIFT + 2;
+  l4_fpage_t fp = l4_fpage(0, order, L4_FPAGE_RW);
   if (l4_error(e->task()->add_ku_mem(&fp)))
-    return nullptr;
+    {
+      order = L4_PAGESHIFT;
+      fp = l4_fpage(0, order, L4_FPAGE_RW);
+      if (l4_error(e->task()->add_ku_mem(&fp)))
+        return nullptr;
+    }
   kumem = l4_fpage_memaddr(fp);
+  l4_size_t kumem_size = 1UL << order;
 
   // The kernel allocated the address so it is known to be valid. The
   // reservation should never fail, unless something is really broken.
-  long err = e->rm()->reserve_area(&kumem, L4_PAGESIZE, Rm::F::Reserved);
+  long err = e->rm()->reserve_area(&kumem, kumem_size, Rm::F::Reserved);
   if (err < 0)
     fprintf(stderr,
             "ERROR: could not reserve ku_mem area, reserve_area returned %ld\n",
             err);
 #endif
 
-  __l4_add_utcbs(kumem, kumem + L4_PAGESIZE);
+  __l4_add_utcbs(kumem, kumem + kumem_size);
 
   l4_utcb_t *u = __pthread_first_free_utcb;
   __pthread_first_free_utcb = __l4_utcb_get_next_free(u);
