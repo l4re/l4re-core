@@ -10,8 +10,10 @@ SRC_CC          := remote_mem.cc app_model.cc app_task.cc main.cc \
 SRC_DATA        := ned.lua
 
 SRC_CC          += lua_sleep.cc
+SRC_CC-$(CONFIG_NED_FDT) += lua_fdt.cc
 
 REQUIRES_LIBS   := libloader lua++ libc_support_misc cxx_libc_io cxx_io
+REQUIRES_LIBS-$(CONFIG_NED_FDT) += libfdt
 
 DEFAULT_HEAP_SIZE := 0x20000
 

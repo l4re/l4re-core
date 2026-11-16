@@ -1,0 +1,16 @@
+menu "Ned"
+
+config NED_FDT
+	bool "Device tree access"
+	depends on (BUILD_ARCH_arm || BUILD_ARCH_arm64 || BUILD_ARCH_riscv)
+	depends on HAVE_BIDPC_LIBFDT
+	default y
+	help
+	  Provides L4.Dt() to read a flattened device tree, e.g. the ".fdt"
+	  boot module, from Lua scripts.
+
+comment "Device tree access requires the libfdt package"
+	depends on (BUILD_ARCH_arm || BUILD_ARCH_arm64 || BUILD_ARCH_riscv)
+	depends on !HAVE_BIDPC_LIBFDT
+
+endmenu

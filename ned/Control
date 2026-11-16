@@ -1,4 +1,4 @@
 requires: stdlibs libc libsupc++ libloader lua++
-optional: readline
+optional: readline libfdt
 provides: ned
 maintainer: warg@os.inf.tu-dresden.de

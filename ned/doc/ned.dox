@@ -268,6 +268,28 @@ can be done like this:
 
 \todo Write more documentation for application startup via Ned
 
+\subsection l4re_ned_dt Device tree access
+
+On platforms with a device tree, Ned can read a flattened device tree, e.g.
+the ".fdt" boot module. The \c NED_FDT build option enables this; \c L4.Dt
+is \c nil without it.
+
+\li \c L4.Dt(ds) opens the device tree in the dataspace \c ds and returns a
+    device tree object.
+\li \c getprop(path, name) returns the raw value of property \c name of the
+    node at \c path as string, or \c nil if there is none.
+\li \c exists(path) returns \c true if the node at \c path exists.
+\li \c find_compatible(compat) returns a table with the paths of all nodes
+    that are compatible to \c compat.
+
+A path is an absolute node path or starts with an alias. For example, the
+MAC address the boot loader set for \c ethernet0:
+
+\code{.lua}
+local dt = L4.Dt(L4.Env.rom:query(".fdt")());
+local mac = dt:getprop("ethernet0", "local-mac-address");
+\endcode
+
 \subsection l4re_ned_interactive Using the interactive ned prompt
 
 Ned can be used in interactive mode by connecting the small ned-prompt helper
