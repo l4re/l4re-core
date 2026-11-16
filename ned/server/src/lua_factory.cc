@@ -56,7 +56,7 @@ __alloc(lua_State *l)
   auto args = cxx::make_unique<L4::Ipc::Varg[]>(argc-1);
   for (int i = 3; i <= argc; ++i)
     {
-      if (lua_isnumber(l, i))
+      if (lua_type(l, i) == LUA_TNUMBER)
         args[i-3] = L4::Ipc::Varg(static_cast<l4_mword_t>
                                   (luaL_checkinteger(l, i)));
       else if (lua_isstring(l, i))
