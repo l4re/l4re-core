@@ -285,3 +285,8 @@ int pthread_l4_start(pthread_t th, void *(*func)(void *), void *arg)
   return res;
 }
 
+int pthread_attr_setcreatesuspend_np(pthread_attr_t *__attr) __THROW
+{
+  __attr->create_flags |= PTHREAD_L4_ATTR_NO_START;
+  return 0;
+}

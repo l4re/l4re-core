@@ -729,6 +729,19 @@ extern int pthread_getaffinity_np (pthread_t __th, size_t __cpusetsize,
      __THROW __attribute__ ((__nonnull__ (3)));
 #endif
 
+/**
+ * Set thread creation attribute to suspended.
+ *
+ * The thread created via the suspended thread creation attribute is not
+ * implicitly scheduled after being created. It needs to be explicitly
+ * scheduled.
+ *
+ * \param[in,out] __attr  Thread attibute to modify.
+ *
+ * \return Error status.
+ */
+extern int pthread_attr_setcreatesuspend_np(pthread_attr_t *__attr) __THROW;
+
 L4_END_DECLS
 
 #endif	/* pthread.h */
