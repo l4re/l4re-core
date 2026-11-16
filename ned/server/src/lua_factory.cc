@@ -63,6 +63,10 @@ __alloc(lua_State *l)
         args[i-3] = L4::Ipc::Varg(luaL_checkstring(l, i));
       else if (lua_isnil(l, i))
         args[i-3] = L4::Ipc::Varg::nil();
+      else
+        luaL_argerror(l, i, lua_pushfstring(l, "number, string or nil "
+                                               "expected, got %s",
+                                            luaL_typename(l, i)));
     }
   args[argc-2] = L4::Ipc::Varg::nil();
 
