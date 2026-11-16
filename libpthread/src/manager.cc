@@ -851,6 +851,17 @@ static void pthread_handle_free(pthread_t th_id)
     return;
   }
   th = handle_to_descr(handle);
+  if (!th->p_exited && !th->p_joining)
+    {
+      /* The thread terminated without a joiner, thus sent a REQ_THREAD_EXIT
+         request, which is still pending. We must not free the thread object
+         here, because then the REQ_THREAD_EXIT handler would work on a freed
+         thread object. Instead we just mark the thread as detached, and then
+         the exit handler will free it. */
+      th->p_detached = 1;
+      __pthread_unlock(handle_to_lock(handle));
+      return;
+    }
   __pthread_unlock(handle_to_lock(handle));
   if (!pthread_handle_thread_exit(th))
     pthread_free(th);
