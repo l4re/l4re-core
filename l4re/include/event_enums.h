@@ -523,6 +523,7 @@ enum L4Re_events_abs
   L4RE_ABS_TOOL_WIDTH     = 0x1c,
   L4RE_ABS_VOLUME         = 0x20,
   L4RE_ABS_MISC           = 0x28,
+  L4RE_ABS_MT_SLOT        = 0x2f,
   L4RE_ABS_MT_TOUCH_MAJOR = 0x30,
   L4RE_ABS_MT_TOUCH_MINOR = 0x31,
   L4RE_ABS_MT_WIDTH_MAJOR = 0x32,
